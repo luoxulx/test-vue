@@ -1,6 +1,6 @@
 import Layout from '@/views/layout/Layout'
 
-const zongRouter = {
+const blogRouter = {
   path: '/table',
   component: Layout,
   redirect: '/table/complex-table',
@@ -11,4 +11,4 @@ const zongRouter = {
   }
 }
 
-export default zongRouter
+export default blogRouter
