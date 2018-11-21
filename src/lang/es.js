@@ -76,6 +76,7 @@ export default {
     title: 'Formulario de acceso',
     logIn: 'Acceso',
     username: 'Usuario',
+    email: '登录邮箱',
     password: 'Contraseña',
     any: 'nada',
     thirdparty: 'Conectar con',

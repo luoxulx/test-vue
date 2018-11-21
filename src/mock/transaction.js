@@ -15,6 +15,7 @@ for (let i = 0; i < count; i++) {
 
 export default {
   getList: () => {
+    console.log(List)
     return {
       total: List.length,
       items: List

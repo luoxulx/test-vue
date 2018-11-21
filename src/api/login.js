@@ -12,6 +12,18 @@ export function loginByUsername(username, password) {
   })
 }
 
+export function loginByEmail(email, password) {
+  const data = {
+    email,
+    password
+  }
+  return request({
+    url: 'login/login',
+    method: 'post',
+    data
+  })
+}
+
 export function logout() {
   return request({
     url: '/login/logout',
@@ -21,9 +33,8 @@ export function logout() {
 
 export function getUserInfo(token) {
   return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
+    url: '/user/user_info',
+    method: 'get'
   })
 }
 

@@ -76,6 +76,7 @@ export default {
     title: 'Login Form',
     logIn: 'Log in',
     username: 'Username',
+    email: '登录邮箱',
     password: 'Password',
     any: 'any',
     thirdparty: 'Or connect with',
