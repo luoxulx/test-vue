@@ -44,7 +44,7 @@
       <el-table-column :label="$t('table.actions')" align="center" min-width="95" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="warning" size="mini" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope.row.id)">{{ $t('table.delete') }}</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">{{ $t('table.delete') }}</el-button>
         </template>
       </el-table-column>
 
@@ -177,15 +177,16 @@ export default {
         }
       })
     },
-    handleDelete(id) {
-      deleteTag(id).then(() => {
-        this.getList()
+    handleDelete(row) {
+      deleteTag(row.id).then(() => {
         this.$notify({
           title: '成功',
           message: '删除成功',
           type: 'success',
           duration: 2000
         })
+        const index = this.list.indexOf(row)
+        this.list.splice(index, 1)
       })
     }
   }

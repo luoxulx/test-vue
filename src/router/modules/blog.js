@@ -14,7 +14,23 @@ const blogRouter = {
       path: 'article',
       component: () => import('@/views/blog/article/index'),
       name: 'Article',
-      meta: { title: 'article' }
+      meta: { title: 'article' },
+      children: [
+        {
+          path: 'create',
+          hidden: true,
+          component: () => import('@/views/blog/article/create'),
+          name: 'CreateArticle',
+          meta: { title: 'createArticle', icon: 'edit' }
+        },
+        {
+          path: 'edit/:id(\\d+)',
+          hidden: true,
+          component: () => import('@/views/blog/article/edit'),
+          name: 'EditArticle',
+          meta: { title: 'editArticle', noCache: true }
+        }
+      ]
     },
     {
       path: 'category',
