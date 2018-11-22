@@ -118,6 +118,8 @@ export default {
     reviewer: 'reviewer',
     id: 'ID',
     date: 'Fecha',
+    createdAt: '创建时间',
+    updatedAt: '更新时间',
     author: 'Autor',
     readings: 'Lector',
     status: 'Estado',

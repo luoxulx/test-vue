@@ -27,24 +27,6 @@ const blogRouter = {
       component: () => import('@/views/blog/tag/index'),
       name: 'tag',
       meta: { title: 'tag' }
-    },
-    {
-      path: 'tree-table',
-      component: () => import('@/views/table/treeTable/treeTable'),
-      name: 'TreeTableDemo',
-      meta: { title: 'treeTable' }
-    },
-    {
-      path: 'custom-tree-table',
-      component: () => import('@/views/table/treeTable/customTreeTable'),
-      name: 'CustomTreeTableDemo',
-      meta: { title: 'customTreeTable' }
-    },
-    {
-      path: 'complex-table',
-      component: () => import('@/views/table/complexTable'),
-      name: 'ComplexTable',
-      meta: { title: 'complexTable' }
     }
   ]
 }

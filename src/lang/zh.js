@@ -118,6 +118,8 @@ export default {
     reviewer: '审核人',
     id: '序号',
     date: '时间',
+    createdAt: '创建时间',
+    updatedAt: '更新时间',
     author: '作者',
     readings: '阅读数',
     status: '状态',
