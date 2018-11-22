@@ -1,30 +1,33 @@
 <template>
-  <div class="dashboard-container">
-    <component :is="currentRole"/>
+  <div class="app-container">
+    <p class="warn-content">
+      {{ $t('guide.description') }}
+      <a href="https://github.com/kamranahmedse/driver.js" target="_blank">driver.js.
+      </a>
+    </p>
+    <el-button icon="el-icon-question" type="primary" @click.prevent.stop="guide">{{ $t('guide.button') }}</el-button>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import adminDashboard from './admin'
-import editorDashboard from './editor'
+import * as Driver from 'driver.js' // import driver.js
+import 'driver.js/dist/driver.min.css' // import driver.js css
+import steps from './defineSteps'
 
 export default {
-  name: 'Dashboard',
-  components: { adminDashboard, editorDashboard },
+  name: 'Guide',
   data() {
     return {
-      currentRole: 'adminDashboard'
+      driver: null
     }
   },
-  computed: {
-    ...mapGetters([
-      'roles'
-    ])
+  mounted() {
+    this.driver = new Driver()
   },
-  created() {
-    if (!this.roles.includes('admin')) {
-      this.currentRole = 'editorDashboard'
+  methods: {
+    guide() {
+      this.driver.defineSteps(steps)
+      this.driver.start()
     }
   }
 }

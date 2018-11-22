@@ -1,6 +1,10 @@
 export default {
   route: {
     dashboard: 'Panel de control',
+    blog: '博客',
+    article: '文章',
+    category: '分类',
+    tag: '标签',
     introduction: 'Introducción',
     documentation: 'Documentación',
     guide: 'Guía',
@@ -125,6 +129,7 @@ export default {
     status: 'Estado',
     actions: 'Acciones',
     edit: 'Editar',
+    preview: '预览',
     publish: 'Publicar',
     draft: 'Draft',
     delete: 'Eliminar',

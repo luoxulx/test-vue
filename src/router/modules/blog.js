@@ -6,8 +6,8 @@ const blogRouter = {
   redirect: '/blog/article',
   name: 'Blog',
   meta: {
-    title: 'Blog',
-    icon: 'table'
+    title: 'blog',
+    icon: 'component'
   },
   children: [
     {
