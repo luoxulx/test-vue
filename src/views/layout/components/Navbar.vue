@@ -34,9 +34,9 @@
               {{ $t('navbar.dashboard') }}
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
+          <a target="_blank" href="https://www.lnmpa.top">
             <el-dropdown-item>
-              {{ $t('navbar.github') }}
+              Front-LX
             </el-dropdown-item>
           </a>
           <el-dropdown-item divided>
@@ -50,6 +50,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { logout } from '@/api/login'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
@@ -81,8 +82,11 @@ export default {
       this.$store.dispatch('toggleSideBar')
     },
     logout() {
-      this.$store.dispatch('LogOut').then(() => {
-        location.reload()// In order to re-instantiate the vue-router object to avoid bugs
+      logout().then(() => {
+        this.$message.success('logout successful')
+        this.$store.dispatch('LogOut').then(() => {
+          location.reload()// In order to re-instantiate the vue-router object to avoid bugs
+        })
       })
     }
   }

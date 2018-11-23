@@ -113,9 +113,11 @@ export default {
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
+        this.listLoading = false
         this.list = response.data.data
         this.total = response.data.meta.pagination.total
-        this.listLoading = false
+      }).catch((response) => {
+        this.$message.error(response.message)
       })
     },
     resetTemp() {
@@ -135,19 +137,15 @@ export default {
           createTag(this.temp).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
-            })
+            this.$message.success('创建成功')
+          }).catch((response) => {
+            this.$message.error(response.message)
           })
         }
       })
     },
     handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
+      this.temp = Object.assign({}, row)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -167,26 +165,20 @@ export default {
               }
             }
             this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
-            })
+            this.$message.success('update successful')
+          }).catch((response) => {
+            this.$message.error(response.message)
           })
         }
       })
     },
     handleDelete(row) {
       deleteTag(row.id).then(() => {
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
-        })
+        this.$message.success('delete successful')
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)
+      }).catch((response) => {
+        this.$message.error(response.message)
       })
     }
   }

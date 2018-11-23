@@ -146,6 +146,8 @@ export default {
         this.list = response.data.data
         this.total = response.data.meta.pagination.total
         this.listLoading = false
+      }).catch((response) => {
+        this.$message.error(response.message)
       })
     },
     handleModifyStatus(row, status) {
@@ -173,6 +175,8 @@ export default {
         })
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)
+      }).catch((response) => {
+        this.$message.error(response.message)
       })
     },
     handleDownload() {
