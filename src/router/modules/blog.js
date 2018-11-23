@@ -3,7 +3,7 @@ import Layout from '@/views/layout/Layout'
 const blogRouter = {
   path: '/blog',
   component: Layout,
-  redirect: '/blog/article',
+  redirect: 'article',
   name: 'Blog',
   meta: {
     title: 'blog',
@@ -13,7 +13,7 @@ const blogRouter = {
     {
       path: 'article',
       component: () => import('@/views/blog/article/index'),
-      name: 'Article',
+      name: 'article',
       meta: { title: 'article' },
       children: [
         {
@@ -28,7 +28,7 @@ const blogRouter = {
           hidden: true,
           component: () => import('@/views/blog/article/edit'),
           name: 'EditArticle',
-          meta: { title: 'editArticle', noCache: true }
+          meta: { title: 'editArticle', noCache: true, icon: 'edit' }
         }
       ]
     },

@@ -5,9 +5,11 @@
       <el-select v-model="listQuery.category" placeholder="分类" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in categoryOptions" :key="item" :label="item" :value="item"/>
       </el-select>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('table.search') }}</el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('table.export') }}</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="alert(1)">{{ $t('table.add') }}</el-button>
+      <el-button v-waves class="filter-item" type="success" size="mini" icon="el-icon-search" @click="handleFilter">{{ $t('table.search') }}</el-button>
+      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" size="mini" icon="el-icon-download" @click="handleDownload">{{ $t('table.export') }}</el-button>
+      <router-link :to="'/blog/article/create'">
+        <el-button v-waves class="filter-item" type="info" size="mini" icon="el-icon-edit">添加</el-button>
+      </router-link>
     </div>
 
     <el-table
@@ -32,36 +34,70 @@
           <span>{{ scope.row.user_id }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.title')" min-width="150px">
+      <el-table-column :label="$t('table.title')" :show-overflow-tooltip="true" min-width="150px">
         <template slot-scope="scope">
           <span class="link-type" @click="alert(1)">{{ scope.row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.readings')" align="center" width="95">
+      <el-table-column :label="$t('table.readings')" align="center" width="65">
         <template slot-scope="scope">
           <span>{{ scope.row.view_count }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.status')" class-name="status-col" width="100">
+      <el-table-column
+        prop="picture"
+        header-align="center"
+        align="center"
+        width="150px"
+        label="缩略图">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
+          <el-popover placement="right" title="完整图预览" trigger="click">
+            <img :src="scope.row.thumbnail" alt="xx">
+            <img slot="reference" :src="scope.row.thumbnail" :alt="scope.row.thumbnail" style="max-height: 20px;max-width: 130px">
+          </el-popover>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('table.status')" class-name="status-col">
         <template slot-scope="scope">
+          <el-tag :type="scope.row.status | statusFilter" @click="handleModifyStatus(scope.row,'0')">{{ scope.row.status }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="创建时间">
+        <template slot-scope="scope">
+          <span>{{ scope.row.created_at }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('table.actions')" align="center" width="225" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <!--<el-button v-if="scope.row.status!='0'" size="mini" type="warning" @click="handleModifyStatus(scope.row,'0')">{{ $t('table.draft') }}-->
+          <!--</el-button>-->
+          <!--<el-button v-if="scope.row.status!='1'" size="mini" type="success" @click="handleModifyStatus(scope.row,'1')">{{ $t('table.publish') }}-->
+          <!--</el-button>-->
+          <el-button type="info" size="mini" @click="previewArticle(scope.row)">预览</el-button>
           <router-link :to="'/blog/article/edit/'+scope.row.id">
             <el-button type="warning" size="mini" icon="el-icon-edit">编辑</el-button>
           </router-link>
+          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">{{ $t('table.delete') }}</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <el-dialog :visible.sync="previewDialog" title="Reading previewContent">
+      <el-container>
+        <el-main>
+          <div style="margin: 15px;" v-html="previewContent"/>
+        </el-main>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="dialogPvVisible = false">{{ $t('table.confirm') }}</el-button>
+        </span>
+      </el-container>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { fetchList } from '@/api/article'
+import { fetchList, deleteArticle } from '@/api/article'
 import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -75,7 +111,7 @@ export default {
       const statusMap = {
         1: 'success',
         2: 'info',
-        0: 'danger'
+        0: 'warning'
       }
       return statusMap[status]
     },
@@ -85,6 +121,8 @@ export default {
   },
   data() {
     return {
+      previewContent: '',
+      previewDialog: false,
       tableKey: 0,
       list: null,
       total: 0,
@@ -110,30 +148,43 @@ export default {
         this.listLoading = false
       })
     },
+    handleModifyStatus(row, status) {
+      this.$message({
+        message: '操作成功',
+        type: 'success'
+      })
+      row.status = status
+    },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
     },
+    previewArticle(row) {
+      this.previewContent = row.content.html
+      this.previewDialog = true
+    },
     handleDelete(row) {
-      this.$notify({
-        title: '成功',
-        message: '删除成功',
-        type: 'success',
-        duration: 2000
+      deleteArticle(row.id).then(() => {
+        this.$notify({
+          title: '成功',
+          message: '删除成功',
+          type: 'success',
+          duration: 2000
+        })
+        const index = this.list.indexOf(row)
+        this.list.splice(index, 1)
       })
-      const index = this.list.indexOf(row)
-      this.list.splice(index, 1)
     },
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
+        const tHeader = ['category_id', 'user_id', 'status', 'view_count', 'title', 'source', 'description', 'created_at']
+        const filterVal = ['category_id', 'user_id', 'status', 'view_count', 'title', 'source', 'description', 'created_at']
         const data = this.formatJson(filterVal, this.list)
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: 'table-list'
+          filename: 'article-list'
         })
         this.downloadLoading = false
       })
