@@ -39,24 +39,11 @@
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">{{ $t('login.logIn') }}</el-button>
 
       <div class="tips">
-        <span>{{ $t('login.email') }} : admin</span>
+        <span>{{ $t('login.email') }} : sb@sb.sb</span>
         <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
       </div>
-      <div class="tips">
-        <span style="margin-right:18px;">{{ $t('login.email') }} : editor</span>
-        <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-      </div>
-
-      <el-button class="thirdparty-button" type="primary" @click="showDialog=true">{{ $t('login.thirdparty') }}</el-button>
+      <br>
     </el-form>
-
-    <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog" append-to-body>
-      {{ $t('login.thirdpartyTips') }}
-      <br>
-      <br>
-      <br>
-      <social-sign />
-    </el-dialog>
 
   </div>
 </template>
@@ -87,7 +74,7 @@ export default {
     return {
       loginForm: {
         email: 'lx@lx.com',
-        password: 'aaaaaa'
+        password: 'aaaaa'
       },
       loginRules: {
         email: [{ required: true, trigger: 'blur', validator: validateByEmail }],
@@ -95,7 +82,6 @@ export default {
       },
       passwordType: 'password',
       loading: false,
-      showDialog: false,
       redirect: undefined
     }
   },

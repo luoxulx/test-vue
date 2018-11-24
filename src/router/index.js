@@ -12,6 +12,7 @@ import Layout from '@/views/layout/Layout'
 // import tableRouter from './modules/table'
 // import nestedRouter from './modules/nested'
 import blogRouter from './modules/blog'
+import extendRouter from './modules/extend'
 
 /** note: Submenu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -162,6 +163,7 @@ export const asyncRouterMap = [
   // nestedRouter,
   // tableRouter,
   blogRouter,
+  extendRouter,
 
   // {
   //   path: '/example',
