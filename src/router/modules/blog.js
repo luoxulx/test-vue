@@ -43,6 +43,12 @@ const blogRouter = {
       component: () => import('@/views/blog/tag/index'),
       name: 'tag',
       meta: { title: 'tag' }
+    },
+    {
+      path: '/blog/article/create',
+      component: () => import('@/views/blog/article/create'),
+      name: 'Create',
+      meta: { title: 'create-test' }
     }
   ]
 }

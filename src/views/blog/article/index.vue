@@ -74,7 +74,7 @@
           <!--<el-button v-if="scope.row.status!='1'" size="mini" type="success" @click="handleModifyStatus(scope.row,'1')">{{ $t('table.publish') }}-->
           <!--</el-button>-->
           <el-button type="info" size="mini" @click="previewArticle(scope.row)">预览</el-button>
-          <router-link :to="'/blog/article/edit/'+scope.row.id">
+          <router-link :to="'/blog/article/edit/'+scope.row.id" tag="aaa">
             <el-button type="warning" size="mini" icon="el-icon-edit">编辑</el-button>
           </router-link>
           <el-button type="danger" size="mini" @click="handleDelete(scope.row)">{{ $t('table.delete') }}</el-button>
