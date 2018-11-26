@@ -64,8 +64,16 @@ service.interceptors.response.use(
   // },
   error => {
     // console.log('err' + error) // for debug
+    // Message({
+    //   message: error.message,
+    //   type: 'error',
+    //   duration: 5 * 1000
+    // })
+    // return Promise.reject(error)
+    const response = error.response
+    console.log(response)
     Message({
-      message: error.message,
+      message: error.response.data.message,
       type: 'error',
       duration: 5 * 1000
     })
