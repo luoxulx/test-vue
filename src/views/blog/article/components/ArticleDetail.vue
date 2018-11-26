@@ -1,11 +1,23 @@
 <template>
   <div class="createPost-container">
     <el-form ref="postForm" :model="postForm" :rules="rules" class="form-container">
-
+      <sticky :class-name="'sub-navbar '+postForm.status">
+        <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="submitForm">发布</el-button>
+        <el-button v-loading="loading" type="warning" @click="submitForm">草稿</el-button>
+      </sticky>
       <div class="createPost-main-container">
         <el-form-item prop="title">
           <MDinput v-model="postForm.title" :maxlength="225" name="title" required>标题</MDinput>
         </el-form-item>
+
+        <el-form-item prop="category_id">
+          <MDinput v-model="postForm.category_id" :maxlength="225" name="category_id" required>分类</MDinput>
+        </el-form-item>
+
+        <el-form-item prop="user_id">
+          <MDinput v-model="postForm.user_id" :maxlength="225" name="user_id" required>user_id</MDinput>
+        </el-form-item>
+
         <el-form-item prop="slug">
           <MDinput v-model="postForm.slug" :maxlength="128" name="slug" prefix-icon="el-icon-share" clearable required>slug</MDinput>
         </el-form-item>
@@ -107,7 +119,7 @@ export default {
   computed: {
     descriptionLength() {
       console.log(this.postForm.description)
-      return this.postForm.description
+      return this.postForm.description.length
     },
     lang() {
       return this.$store.getters.language
@@ -161,13 +173,7 @@ export default {
         if (valid) {
           this.loading = true
           createArticle(this.postForm).then(() => {
-            console.log(1)
-          })
-          this.$notify({
-            title: '成功',
-            message: '添加文章成功',
-            type: 'success',
-            duration: 2000
+            this.$message.success('添加成功')
           })
           this.loading = false
         } else {

@@ -25,7 +25,7 @@ export function fetchPv(pv) {
 
 export function createArticle(data) {
   return request({
-    url: '/article/store',
+    url: '/article',
     method: 'post',
     data
   })
@@ -33,7 +33,7 @@ export function createArticle(data) {
 
 export function updateArticle(data) {
   return request({
-    url: '/article/update',
+    url: '/article/' + data.id,
     method: 'put',
     data
   })

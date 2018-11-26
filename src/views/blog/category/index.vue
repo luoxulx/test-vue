@@ -77,11 +77,11 @@
 </template>
 
 <script>
-import { fetchList, createTag, updateTag, deleteTag } from '@/api/tag'
+import { fetchList, createCategory, updateCategory, deleteCategory } from '@/api/category'
 import Pagination from '@/components/Pagination'
 
 export default {
-  name: 'Tag',
+  name: 'Category',
   components: { Pagination },
   data() {
     return {
@@ -134,7 +134,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createTag(this.temp).then(() => {
+          createCategory(this.temp).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$message.success('create successful')
@@ -155,7 +155,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          updateTag(tempData).then(() => {
+          updateCategory(tempData).then(() => {
             for (const v of this.list) {
               if (v.id === this.temp.id) {
                 const index = this.list.indexOf(v)
@@ -172,7 +172,7 @@ export default {
       })
     },
     handleDelete(id) {
-      deleteTag(id).then(() => {
+      deleteCategory(id).then(() => {
         this.getList()
         this.$notify({
           title: '成功',

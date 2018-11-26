@@ -14,23 +14,7 @@ const blogRouter = {
       path: 'article',
       component: () => import('@/views/blog/article/index'),
       name: 'article',
-      meta: { title: 'article' },
-      children: [
-        {
-          path: 'create',
-          hidden: true,
-          component: () => import('@/views/blog/article/create'),
-          name: 'CreateArticle',
-          meta: { title: 'createArticle', icon: 'edit' }
-        },
-        {
-          path: 'edit/:id(\\d+)',
-          hidden: true,
-          component: () => import('@/views/blog/article/edit'),
-          name: 'EditArticle',
-          meta: { title: 'editArticle', noCache: true, icon: 'edit' }
-        }
-      ]
+      meta: { title: 'article' }
     },
     {
       path: 'category',
@@ -45,10 +29,18 @@ const blogRouter = {
       meta: { title: 'tag' }
     },
     {
-      path: '/blog/article/create',
+      path: 'article/create',
+      hidden: true,
       component: () => import('@/views/blog/article/create'),
-      name: 'Create',
-      meta: { title: 'create-test' }
+      name: 'CreateArticle',
+      meta: { title: 'createArticle', icon: 'edit' }
+    },
+    {
+      path: 'article/edit/:id(\\d+)',
+      hidden: true,
+      component: () => import('@/views/blog/article/edit'),
+      name: 'EditArticle',
+      meta: { title: 'editArticle', noCache: true, icon: 'edit' }
     }
   ]
 }

@@ -10,7 +10,7 @@ export function fetchList(query) {
 
 export function createCategory(data) {
   return request({
-    url: '/category/store',
+    url: '/category',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function createCategory(data) {
 
 export function updateCategory(data) {
   return request({
-    url: '/category/update',
+    url: '/category/' + data.id,
     method: 'put',
     data
   })

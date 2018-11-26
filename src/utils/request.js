@@ -73,7 +73,7 @@ service.interceptors.response.use(
     const response = error.response
     console.log(response)
     Message({
-      message: error.response.data.message,
+      message: error.response.data.message || error.response.data.exception,
       type: 'error',
       duration: 5 * 1000
     })
