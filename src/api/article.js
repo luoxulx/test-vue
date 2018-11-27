@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function fetchList(query) {
+export function articleList(query) {
   return request({
     url: '/article',
     method: 'get',
@@ -8,22 +8,14 @@ export function fetchList(query) {
   })
 }
 
-export function fetchArticle(id) {
+export function articleDetail(id) {
   return request({
     url: '/article/' + id,
     method: 'get'
   })
 }
 
-export function fetchPv(pv) {
-  return request({
-    url: '/article/pv',
-    method: 'get',
-    params: { pv }
-  })
-}
-
-export function createArticle(data) {
+export function articleCreate(data) {
   return request({
     url: '/article',
     method: 'post',
@@ -31,7 +23,7 @@ export function createArticle(data) {
   })
 }
 
-export function updateArticle(data) {
+export function articleUpdate(data) {
   return request({
     url: '/article/' + data.id,
     method: 'put',
@@ -39,7 +31,7 @@ export function updateArticle(data) {
   })
 }
 
-export function deleteArticle(id) {
+export function articleDelete(id) {
   return request({
     url: '/article/' + id,
     method: 'delete'

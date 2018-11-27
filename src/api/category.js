@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function fetchList(query) {
+export function categoryList(query) {
   return request({
     url: '/category',
     method: 'get',
@@ -8,7 +8,7 @@ export function fetchList(query) {
   })
 }
 
-export function createCategory(data) {
+export function categoryCreate(data) {
   return request({
     url: '/category',
     method: 'post',
@@ -16,7 +16,7 @@ export function createCategory(data) {
   })
 }
 
-export function updateCategory(data) {
+export function categoryUpdate(data) {
   return request({
     url: '/category/' + data.id,
     method: 'put',
@@ -24,7 +24,7 @@ export function updateCategory(data) {
   })
 }
 
-export function deleteCategory(id) {
+export function categoryDelete(id) {
   return request({
     url: '/category/' + id,
     method: 'delete'

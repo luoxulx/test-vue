@@ -57,9 +57,9 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.status')" class-name="status-col">
+      <el-table-column label="草稿" class-name="status-col">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter" @click="handleModifyStatus(scope.row,'0')">{{ scope.row.status }}</el-tag>
+          <el-tag :type="scope.row.is_draft | statusFilter" @click="handleModifyStatus(scope.row,'0')">{{ scope.row.is_draft }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间">
@@ -74,7 +74,7 @@
           <!--<el-button v-if="scope.row.status!='1'" size="mini" type="success" @click="handleModifyStatus(scope.row,'1')">{{ $t('table.publish') }}-->
           <!--</el-button>-->
           <el-button type="info" size="mini" @click="previewArticle(scope.row)">预览</el-button>
-          <router-link :to="'/blog/article/edit/'+scope.row.id" tag="aaa">
+          <router-link :to="'/blog/article/edit/'+scope.row.id">
             <el-button type="warning" size="mini" icon="el-icon-edit">编辑</el-button>
           </router-link>
           <el-button type="danger" size="mini" @click="handleDelete(scope.row)">{{ $t('table.delete') }}</el-button>
@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { fetchList, deleteArticle } from '@/api/article'
+import { articleList, articleDelete } from '@/api/article'
 import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -142,12 +142,10 @@ export default {
   },
   methods: {
     getList() {
-      fetchList(this.listQuery).then(response => {
+      articleList(this.listQuery).then(response => {
         this.list = response.data.data
         this.total = response.data.meta.pagination.total
         this.listLoading = false
-      }).catch((response) => {
-        this.$message.error(response.message)
       })
     },
     handleModifyStatus(row, status) {
@@ -166,7 +164,7 @@ export default {
       this.previewDialog = true
     },
     handleDelete(row) {
-      deleteArticle(row.id).then(() => {
+      articleDelete(row.id).then(() => {
         this.$notify({
           title: '成功',
           message: '删除成功',
@@ -175,8 +173,6 @@ export default {
         })
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)
-      }).catch((response) => {
-        this.$message.error(response.message)
       })
     },
     handleDownload() {

@@ -6,36 +6,52 @@
         <el-button v-loading="loading" type="warning" @click="submitForm">草稿</el-button>
       </sticky>
       <div class="createPost-main-container">
-        <el-form-item prop="title">
-          <MDinput v-model="postForm.title" :maxlength="225" name="title" required>标题</MDinput>
-        </el-form-item>
-
-        <el-form-item prop="category_id">
-          <MDinput v-model="postForm.category_id" :maxlength="3" type="number" name="category_id" required>分类</MDinput>
-        </el-form-item>
-
-        <el-form-item prop="user_id">
-          <MDinput v-model="postForm.user_id" :maxlength="3" type="number" name="user_id" required>user_id</MDinput>
-        </el-form-item>
-
-        <el-form-item prop="slug">
-          <MDinput v-model="postForm.slug" :maxlength="128" name="slug" prefix-icon="el-icon-share" clearable required>slug</MDinput>
-        </el-form-item>
-        <el-form-item prop="source">
-          <MDinput v-model="postForm.source" :maxlength="225" type="url" name="source" prefix-icon="el-icon-share" clearable>来源链接</MDinput>
-        </el-form-item>
-
-        <el-form-item style="margin-bottom: 40px;">
-          <el-input :rows="1" v-model="postForm.description" type="textarea" class="article-textarea" autosize placeholder="描述"/>
-          <span v-show="descriptionLength" class="word-counter">{{ descriptionLength }}字</span>
-        </el-form-item>
-        <el-form-item label-width="85px" label="缩略图" class="postInfo-container-item">
-          <el-upload :data="uploadObj" :multiple="false" :before-upload="beforeUpload" action="https://upload.qbox.me" drag>
-            <i class="el-icon-upload"/>
-            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          </el-upload>
-        </el-form-item>
-
+        <el-row>
+          <el-col :span="24">
+            <el-form-item prop="title">
+              <MDinput v-model="postForm.title" :maxlength="225" name="title" required>标题</MDinput>
+            </el-form-item>
+            <el-form-item prop="slug">
+              <MDinput v-model="postForm.slug" :maxlength="128" name="slug" prefix-icon="el-icon-share" clearable required>slug</MDinput>
+            </el-form-item>
+            <el-form-item prop="source">
+              <MDinput v-model="postForm.source" :maxlength="225" type="url" name="source" prefix-icon="el-icon-share" clearable>来源链接</MDinput>
+            </el-form-item>
+            <el-form-item style="margin-bottom: 40px;">
+              <el-input :rows="1" v-model="postForm.description" type="textarea" class="article-textarea" autosize placeholder="描述"/>
+              <span v-show="descriptionLength" class="word-counter">{{ descriptionLength }}字</span>
+            </el-form-item>
+            <div class="postInfo-container">
+              <el-row>
+                <el-col :span="8">
+                  <el-form-item prop="category_id" label="文章分类">
+                    <el-select v-model="postForm.category_id" clearable placeholder="请选择分类">
+                      <el-option v-for="item in category_option" :key="item.value" :label="item.label" :value="item.value" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="tags" label="文章标签">
+                    <el-select v-model="postForm.tags" multiple filterable allow-create default-first-option placeholder="请选择文章标签">
+                      <el-option v-for="item in tag_option" :key="item.value" :label="item.label" :value="item.value" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item prop="created_at" label="发布时间">
+                    <el-date-picker v-model="postForm.created_at" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期时间" />
+                  </el-form-item>
+                </el-col>
+                <el-form-item label="缩略图" class="postInfo-container-item">
+                  <el-upload :data="uploadObj" :multiple="false" :before-upload="beforeUpload" action="https://upload.qbox.me" drag>
+                    <i class="el-icon-upload"/>
+                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                  </el-upload>
+                </el-form-item>
+              </el-row>
+            </div>
+          </el-col>
+        </el-row>
         <div class="editor-container">
           <Tinymce ref="editor" :height="400" v-model="postForm.content" />
         </div>
@@ -50,17 +66,23 @@ import Tinymce from '@/components/Tinymce'
 import MDinput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { validateURL } from '@/utils/validate'
-import { fetchArticle, createArticle, updateArticle, deleteArticle } from '@/api/article'
+import { articleCreate, articleUpdate, articleDetail } from '@/api/article'
+import { tagList } from '@/api/tag'
+import { categoryList } from '@/api/category'
 import { getToken } from '@/api/qiniu'
 
 const defaultForm = {
-  status: '0',
+  is_draft: '0',
+  user_id: '1',
+  category_id: '',
+  tags: [],
   title: '',
   slug: '',
   source: '',
   description: '',
   thumbnail: '',
   content: '',
+  created_at: '',
   id: undefined
 }
 
@@ -113,12 +135,14 @@ export default {
       // upload 部分
       uploadObj: { token: '', key: '' },
       image_uri: [],
-      fileList: []
+      fileList: [],
+      // 分类  标签
+      category_option: [],
+      tag_option: []
     }
   },
   computed: {
     descriptionLength() {
-      console.log(this.postForm.description)
       return this.postForm.description.length
     },
     lang() {
@@ -131,6 +155,8 @@ export default {
       this.fetchData(id)
     } else {
       this.postForm = Object.assign({}, defaultForm)
+      this.getTags()
+      this.getCategories()
     }
 
     // Why need to make a copy of this.$route here?
@@ -155,8 +181,11 @@ export default {
       })
     },
     fetchData(id) {
-      fetchArticle(id).then(response => {
+      articleDetail(id).then(response => {
         this.postForm = response.data.data
+        if (this.postForm.content) {
+          this.postForm.content = response.data.data.content['html']
+        }
         // Set tagsview title
         this.setTagsViewTitle()
       }).catch(err => {
@@ -172,17 +201,28 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           this.loading = true
-          createArticle(this.postForm).then(() => {
+          articleCreate(this.postForm).then(() => {
             this.$message.success('添加成功')
           })
           this.loading = false
         } else {
           this.$message.error(111)
-          updateArticle()
-          deleteArticle()
           return false
         }
       })
+    },
+    getTags() {
+      tagList({ per_page: 0 }).then(response => {
+        this.tag_option = response.data.data
+      })
+    },
+    getCategories() {
+      categoryList({ per_page: 0 }).then(response => {
+        this.category_option = response.data.data
+      })
+    },
+    test() {
+      articleUpdate()
     }
   }
 }

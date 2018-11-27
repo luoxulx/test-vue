@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { fetchList, createCategory, updateCategory, deleteCategory } from '@/api/category'
+import { categoryList, categoryCreate, categoryUpdate, categoryDelete } from '@/api/category'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -118,12 +118,10 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
+      categoryList(this.listQuery).then(response => {
         this.list = response.data.data
         this.total = response.data.meta.pagination.total
         this.listLoading = false
-      }).catch((response) => {
-        this.$message.error(response.message)
       })
     },
     resetTemp() {
@@ -140,17 +138,16 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createCategory(this.temp).then(() => {
+          categoryCreate(this.temp).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$message.success('create successful')
-          }).catch((response) => {
-            this.$message.error(response.message)
           })
         }
       })
     },
     handleUpdate(row) {
+      this.temp = Object.assign({}, row) // copy obj
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -161,7 +158,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          updateCategory(tempData).then(() => {
+          categoryUpdate(tempData).then(() => {
             for (const v of this.list) {
               if (v.id === this.temp.id) {
                 const index = this.list.indexOf(v)
@@ -171,23 +168,14 @@ export default {
             }
             this.dialogFormVisible = false
             this.$message.success('update successful')
-          }).catch((response) => {
-            this.$message.error(response.message)
           })
         }
       })
     },
     handleDelete(id) {
-      deleteCategory(id).then(() => {
+      categoryDelete(id).then(() => {
         this.getList()
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
-        })
-      }).catch((response) => {
-        this.$message.error(response.message)
+        this.$message.success('删除成功')
       })
     }
   }

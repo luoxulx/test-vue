@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { fetchList, createTag, updateTag, deleteTag } from '@/api/tag'
+import { tagList, tagCreate, tagUpdate, TagDelete } from '@/api/tag'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -112,7 +112,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
+      tagList(this.listQuery).then(response => {
         this.listLoading = false
         this.list = response.data.data
         this.total = response.data.meta.pagination.total
@@ -134,12 +134,10 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createTag(this.temp).then(() => {
+          tagCreate(this.temp).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$message.success('创建成功')
-          }).catch((response) => {
-            this.$message.error(response.message)
           })
         }
       })
@@ -156,7 +154,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          updateTag(tempData).then(() => {
+          tagUpdate(tempData).then(() => {
             for (const v of this.list) {
               if (v.id === this.temp.id) {
                 const index = this.list.indexOf(v)
@@ -166,19 +164,15 @@ export default {
             }
             this.dialogFormVisible = false
             this.$message.success('update successful')
-          }).catch((response) => {
-            this.$message.error(response.message)
           })
         }
       })
     },
     handleDelete(row) {
-      deleteTag(row.id).then(() => {
+      TagDelete(row.id).then(() => {
         this.$message.success('delete successful')
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)
-      }).catch((response) => {
-        this.$message.error(response.message)
       })
     }
   }

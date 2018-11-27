@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function fetchList(query) {
+export function tagList(query) {
   return request({
     url: '/tag',
     method: 'get',
@@ -8,7 +8,7 @@ export function fetchList(query) {
   })
 }
 
-export function createTag(data) {
+export function tagCreate(data) {
   return request({
     url: '/tag',
     method: 'post',
@@ -16,7 +16,7 @@ export function createTag(data) {
   })
 }
 
-export function updateTag(data) {
+export function tagUpdate(data) {
   return request({
     url: '/tag/' + data.id,
     method: 'put',
@@ -24,7 +24,7 @@ export function updateTag(data) {
   })
 }
 
-export function deleteTag(id) {
+export function TagDelete(id) {
   return request({
     url: '/tag/' + id,
     method: 'delete'
