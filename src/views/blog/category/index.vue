@@ -11,21 +11,29 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" label="parent ID" width="85">
+        <template slot-scope="scope">
+          <span :color="scope.row.parent_id">{{ scope.row.parent_id }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column label="分类名称">
         <template slot-scope="scope">
           <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="颜色" width="85">
+      <el-table-column
+        prop="picture"
+        header-align="center"
+        align="center"
+        width="150px"
+        label="缩略图">
         <template slot-scope="scope">
-          <span :color="scope.row.color">{{ scope.row.color }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="样式">
-        <template slot-scope="scope">
-          <span>{{ scope.row.style }}</span>
+          <el-popover placement="right" title="完整图预览" trigger="click">
+            <img :src="scope.row.thumbnail" alt="xxxx">
+            <img slot="reference" :src="scope.row.thumbnail" :alt="scope.row.thumbnail" style="max-height: 20px;max-width: 130px">
+          </el-popover>
         </template>
       </el-table-column>
 
@@ -53,16 +61,14 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="50%">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
+        <el-form-item label="父级ID" prop="parent_id">
+          <el-input v-model="temp.parent_id"/>
+        </el-form-item>
         <el-form-item label="名称" prop="name">
           <el-input v-model="temp.name"/>
         </el-form-item>
-        <el-form-item label="颜色" prop="color">
-          <el-color-picker v-model="temp.color"/><el-input v-model="temp.color"/>
-        </el-form-item>
-        <el-form-item label="样式" prop="style">
-          <el-select v-model="temp.style" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in styleOptions" :key="item" :label="item" :value="item"/>
-          </el-select>
+        <el-form-item label="缩略图" prop="thumbnail">
+          <el-input v-model="temp.thumbnail"/>
         </el-form-item>
         <el-form-item label="描述" prop="description">
           <el-input :autosize="{ minRows: 3, maxRows: 5}" v-model="temp.description" type="textarea" placeholder="描述"/>

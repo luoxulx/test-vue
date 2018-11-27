@@ -4,6 +4,7 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 const user = {
   state: {
     user: '',
+    user_id: '',
     status: '',
     code: '',
     token: getToken(),

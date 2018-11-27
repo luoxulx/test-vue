@@ -11,11 +11,11 @@
         </el-form-item>
 
         <el-form-item prop="category_id">
-          <MDinput v-model="postForm.category_id" :maxlength="225" name="category_id" required>分类</MDinput>
+          <MDinput v-model="postForm.category_id" :maxlength="3" type="number" name="category_id" required>分类</MDinput>
         </el-form-item>
 
         <el-form-item prop="user_id">
-          <MDinput v-model="postForm.user_id" :maxlength="225" name="user_id" required>user_id</MDinput>
+          <MDinput v-model="postForm.user_id" :maxlength="3" type="number" name="user_id" required>user_id</MDinput>
         </el-form-item>
 
         <el-form-item prop="slug">
@@ -160,7 +160,7 @@ export default {
         // Set tagsview title
         this.setTagsViewTitle()
       }).catch(err => {
-        console.log(err)
+        console.error(err)
       })
     },
     setTagsViewTitle() {
