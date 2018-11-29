@@ -156,6 +156,18 @@ export const asyncRouterMap = [
       }
     ]
   },
+  {
+    path: '/qiniu',
+    component: Layout,
+    children: [
+      {
+        path: 'upload',
+        component: () => import('@/views/qiniu/upload'),
+        name: 'qini',
+        meta: { title: 'qiniu', icon: 'icon', noCache: true }
+      }
+    ]
+  },
 
   /** When your routing table is too long, you can split it into small modules**/
   // componentsRouter,

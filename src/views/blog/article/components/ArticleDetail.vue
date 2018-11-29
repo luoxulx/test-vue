@@ -42,13 +42,8 @@
                     <el-date-picker v-model="postForm.created_at" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期时间" />
                   </el-form-item>
                 </el-col>
-                <el-form-item label="缩略图" class="postInfo-container-item">
-                  <el-upload :data="uploadObj" :multiple="false" :before-upload="beforeUpload" action="https://upload.qbox.me" drag>
-                    <i class="el-icon-upload"/>
-                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                  </el-upload>
-                </el-form-item>
               </el-row>
+              <el-form-item prop="created_at" label="缩略图"><picture-upload /></el-form-item>
             </div>
           </el-col>
         </el-row>
@@ -69,7 +64,7 @@ import { validateURL } from '@/utils/validate'
 import { articleCreate, articleUpdate, articleDetail } from '@/api/article'
 import { tagList } from '@/api/tag'
 import { categoryList } from '@/api/category'
-import { getToken } from '@/api/qiniu'
+import { PictureUpload } from '@/views/blog/components/index'
 
 const defaultForm = {
   is_draft: '0',
@@ -88,7 +83,7 @@ const defaultForm = {
 
 export default {
   name: 'ArticleDetail',
-  components: { Tinymce, MDinput, Sticky },
+  components: { Tinymce, MDinput, Sticky, PictureUpload },
   props: {
     isEdit: {
       type: Boolean,
@@ -132,10 +127,6 @@ export default {
         source: [{ validator: validateSourceUri, trigger: 'blur' }]
       },
       tempRoute: {},
-      // upload 部分
-      uploadObj: { token: '', key: '' },
-      image_uri: [],
-      fileList: [],
       // 分类  标签
       category_option: [],
       tag_option: []
@@ -165,21 +156,6 @@ export default {
     this.tempRoute = Object.assign({}, this.$route)
   },
   methods: {
-    beforeUpload() {
-      const _self = this
-      return new Promise((resolve, reject) => {
-        getToken().then(response => {
-          const key = response.data.qiniu_key
-          const token = response.data.qiniu_token
-          _self._data.uploadObj.token = token
-          _self._data.uploadObj.key = key
-          resolve(true)
-        }).catch(err => {
-          console.log(err)
-          reject(false)
-        })
-      })
-    },
     fetchData(id) {
       articleDetail(id).then(response => {
         this.postForm = response.data.data
@@ -201,6 +177,7 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           this.loading = true
+          this.postForm.thumbnail = this.tempPictureUrl
           articleCreate(this.postForm).then(() => {
             this.$message.success('添加成功')
           })
