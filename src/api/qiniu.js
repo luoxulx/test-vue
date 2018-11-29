@@ -22,3 +22,11 @@ export function QiniuFiles(data) {
     data
   })
 }
+
+export function QiniuUpload(data) {
+  return request({
+    url: '/tool/image/upload',
+    method: 'post',
+    data
+  })
+}

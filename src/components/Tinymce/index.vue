@@ -11,6 +11,7 @@
 import editorImage from './components/editorImage'
 import plugins from './plugins'
 import toolbar from './toolbar'
+import { QiniuUpload } from '@/api/qiniu'
 
 export default {
   name: 'Tinymce',
@@ -120,40 +121,50 @@ export default {
           editor.on('FullscreenStateChanged', (e) => {
             _this.fullscreen = e.state
           })
-        }
+        },
         // 整合七牛上传
-        // images_dataimg_filter(img) {
-        //   setTimeout(() => {
-        //     const $image = $(img);
-        //     $image.removeAttr('width');
-        //     $image.removeAttr('height');
-        //     if ($image[0].height && $image[0].width) {
-        //       $image.attr('data-wscntype', 'image');
-        //       $image.attr('data-wscnh', $image[0].height);
-        //       $image.attr('data-wscnw', $image[0].width);
-        //       $image.addClass('wscnph');
-        //     }
-        //   }, 0);
-        //   return img
-        // },
-        // images_upload_handler(blobInfo, success, failure, progress) {
-        //   progress(0);
-        //   const token = _this.$store.getters.token;
-        //   getToken(token).then(response => {
-        //     const url = response.data.qiniu_url;
-        //     const formData = new FormData();
-        //     formData.append('token', response.data.qiniu_token);
-        //     formData.append('key', response.data.qiniu_key);
-        //     formData.append('file', blobInfo.blob(), url);
-        //     upload(formData).then(() => {
-        //       success(url);
-        //       progress(100);
-        //     })
-        //   }).catch(err => {
-        //     failure('出现未知问题，刷新页面，或者联系程序员')
-        //     console.log(err);
-        //   });
-        // },
+        images_dataimg_filter(img) {
+          setTimeout(() => {
+            const $ = this
+            const $image = $(img)
+            $image.removeAttr('width')
+            $image.removeAttr('height')
+            if ($image[0].height && $image[0].width) {
+              $image.attr('data-wscntype', 'image')
+              $image.attr('data-wscnh', $image[0].height)
+              $image.attr('data-wscnw', $image[0].width)
+              $image.addClass('wscnph')
+            }
+          }, 0)
+          return img
+        },
+        images_upload_handler(blobInfo, success, failure, progress) {
+          progress(0)
+          const formData = new FormData()
+          formData.append('image', blobInfo.blob())
+          QiniuUpload(formData).then((response) => {
+            success(response.watermark)
+            progress(100)
+          }).catch(err => {
+            failure('出现未知问题，刷新页面，或者联系程序员')
+            console.log(err)
+          })
+          // const token = _this.$store.getters.token
+          // getToken(token).then(response => {
+          //   const url = response.data.qiniu_url
+          //   const formData = new FormData()
+          //   formData.append('token', response.data.qiniu_token)
+          //   formData.append('key', response.data.qiniu_key)
+          //   formData.append('file', blobInfo.blob(), url)
+          //   upload(formData).then(() => {
+          //     success(url)
+          //     progress(100)
+          //   })
+          // }).catch(err => {
+          //   failure('出现未知问题，刷新页面，或者联系程序员')
+          //   console.log(err)
+          // })
+        }
       })
     },
     destroyTinymce() {

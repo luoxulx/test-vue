@@ -21,10 +21,15 @@ import { getToken } from '@/api/qiniu'
 
 export default{
   name: 'PictureUpload',
+  props: {
+    tempPictureUrl: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
-      tempPictureObject: { token: '', key: '' },
-      tempPictureUrl: ''
+      tempPictureObject: { token: '', key: '' }
     }
   },
   methods: {

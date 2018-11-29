@@ -3,7 +3,7 @@
     <el-form ref="postForm" :model="postForm" :rules="rules" class="form-container">
       <sticky :class-name="'sub-navbar '+postForm.status">
         <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="submitForm">发布</el-button>
-        <el-button v-loading="loading" type="warning" @click="submitForm">草稿</el-button>
+        <el-button v-loading="loading" type="warning" @click="draftForm">草稿</el-button>
       </sticky>
       <div class="createPost-main-container">
         <el-row>
@@ -43,7 +43,7 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-form-item prop="created_at" label="缩略图"><picture-upload /></el-form-item>
+              <el-form-item prop="created_at" label="缩略图"><picture-upload :temp-picture-url="postForm.thumbnail" v-model="postForm.thumbnail" /></el-form-item>
             </div>
           </el-col>
         </el-row>
@@ -121,7 +121,6 @@ export default {
       postForm: Object.assign({}, defaultForm),
       loading: false,
       rules: {
-        thumbnail: [{ validator: validateRequire }],
         title: [{ validator: validateRequire }],
         content: [{ validator: validateRequire }],
         source: [{ validator: validateSourceUri, trigger: 'blur' }]
@@ -162,6 +161,7 @@ export default {
         if (this.postForm.content) {
           this.postForm.content = response.data.data.content['html']
         }
+
         // Set tagsview title
         this.setTagsViewTitle()
       }).catch(err => {
@@ -180,6 +180,23 @@ export default {
           this.postForm.thumbnail = this.tempPictureUrl
           articleCreate(this.postForm).then(() => {
             this.$message.success('添加成功')
+            this.$router.push('/blog/article')
+          })
+          this.loading = false
+        } else {
+          this.$message.error(111)
+          return false
+        }
+      })
+    },
+    draftForm() {
+      this.$refs.postForm.validate(valid => {
+        if (valid) {
+          this.loading = true
+          this.postForm.is_draft = 1
+          articleCreate(this.postForm).then(() => {
+            this.$message.success('修改成功')
+            this.$router.push('/blog/article')
           })
           this.loading = false
         } else {
@@ -190,12 +207,20 @@ export default {
     },
     getTags() {
       tagList({ per_page: 0 }).then(response => {
-        this.tag_option = response.data.data
+        const temp = []
+        for (var i = 0; i < response.data.data.length; i++) {
+          temp.push({ value: response.data.data[i].id, label: response.data.data[i].name })
+        }
+        this.tag_option = temp
       })
     },
     getCategories() {
       categoryList({ per_page: 0 }).then(response => {
-        this.category_option = response.data.data
+        const temp = []
+        for (var i = 0; i < response.data.data.length; i++) {
+          temp.push({ value: response.data.data[i].id, label: response.data.data[i].name })
+        }
+        this.category_option = temp
       })
     },
     test() {
