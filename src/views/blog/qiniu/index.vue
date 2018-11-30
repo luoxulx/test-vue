@@ -57,6 +57,7 @@ export default {
   data() {
     return {
       listLoading: true,
+      total: 0,
       list: [],
       prefix: 'test_file/'
     }
@@ -68,7 +69,8 @@ export default {
     getList() {
       QiniuFiles({ prefix: this.prefix }).then(response => {
         this.listLoading = false
-        this.list = response.data
+        this.list = response.data.data
+        this.total = response.data.total
       })
     },
     handleDelete(filename) {
