@@ -52,8 +52,8 @@
         label="缩略图">
         <template slot-scope="scope">
           <el-popover placement="right" title="完整图预览" trigger="click">
-            <img :src="scope.row.thumbnail" alt="xx">
-            <img slot="reference" :src="scope.row.thumbnail" :alt="scope.row.thumbnail" style="max-height: 20px;max-width: 130px">
+            <img :src="scope.row.img_url" alt="xx">
+            <img slot="reference" :src="scope.row.img_url" style="max-height: 20px;max-width: 130px">
           </el-popover>
         </template>
       </el-table-column>
@@ -109,9 +109,8 @@ export default {
   filters: {
     statusFilter(status) {
       const statusMap = {
-        1: 'success',
-        2: 'info',
-        0: 'warning'
+        0: 'success',
+        1: 'danger'
       }
       return statusMap[status]
     },
@@ -143,9 +142,14 @@ export default {
   methods: {
     getList() {
       articleList(this.listQuery).then(response => {
-        this.list = response.data.data
+        const cdnImageDomain = 'http://cdn.lnmpa.top/'
+        const tempList = response.data.data
         this.total = response.data.meta.pagination.total
         this.listLoading = false
+        for (var i = 0; i < tempList.length; i++) {
+          tempList[i].img_url = tempList[i].thumbnail ? cdnImageDomain + tempList[i].thumbnail : 'https://www.lnmpa.top/svg/default.png'
+        }
+        this.list = tempList
       })
     },
     handleModifyStatus(row, status) {

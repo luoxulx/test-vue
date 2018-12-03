@@ -47,11 +47,10 @@ export default{
           if (!ext) {
             reject(false)
           }
-          console.log(response)
           const key = response.data.qiniu_key
           const token = response.data.qiniu_token
           _self._data.tempPictureObject.token = token
-          _self._data.tempPictureObject.key = 'test_file2/' + key + ext
+          _self._data.tempPictureObject.key = 'post/' + key + ext
           resolve(true)
         }).catch(err => {
           console.log(err)

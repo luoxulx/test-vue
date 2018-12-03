@@ -161,6 +161,8 @@ export default {
         if (this.postForm.content) {
           this.postForm.content = response.data.data.content['html']
         }
+        const cdnImageDomain = 'http://cdn.lnmpa.top/'
+        this.postForm.thumbnail = cdnImageDomain + this.postForm.thumbnail
 
         // Set tagsview title
         this.setTagsViewTitle()
