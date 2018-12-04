@@ -43,7 +43,7 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-form-item prop="created_at" label="缩略图"><picture-upload :temp-picture-url="postForm.thumbnail" v-model="postForm.thumbnail" /></el-form-item>
+              <el-form-item prop="created_at" label="缩略图"><qiniu-upload :prop-picture-url="postForm.thumbnail" :prop-prefix="path_prefix" v-model="postForm.thumbnail" /></el-form-item>
             </div>
           </el-col>
         </el-row>
@@ -60,11 +60,10 @@
 import Tinymce from '@/components/Tinymce'
 import MDinput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
-import { validateURL } from '@/utils/validate'
 import { articleCreate, articleUpdate, articleDetail } from '@/api/article'
 import { tagList } from '@/api/tag'
 import { categoryList } from '@/api/category'
-import { PictureUpload } from '@/views/blog/components/index'
+import { QiniuUpload } from '@/views/blog/components/Qiniu'
 
 const defaultForm = {
   is_draft: '0',
@@ -83,7 +82,7 @@ const defaultForm = {
 
 export default {
   name: 'ArticleDetail',
-  components: { Tinymce, MDinput, Sticky, PictureUpload },
+  components: { Tinymce, MDinput, Sticky, QiniuUpload },
   props: {
     isEdit: {
       type: Boolean,
@@ -102,30 +101,16 @@ export default {
         callback()
       }
     }
-    const validateSourceUri = (rule, value, callback) => {
-      if (value) {
-        if (validateURL(value)) {
-          callback()
-        } else {
-          this.$message({
-            message: 'url链接格式不正确',
-            type: 'error'
-          })
-          callback(new Error('url链接格式不正确'))
-        }
-      } else {
-        callback()
-      }
-    }
     return {
       postForm: Object.assign({}, defaultForm),
       loading: false,
       rules: {
         title: [{ validator: validateRequire }],
-        content: [{ validator: validateRequire }],
-        source: [{ validator: validateSourceUri, trigger: 'blur' }]
+        content: [{ validator: validateRequire }]
       },
       tempRoute: {},
+      path_prefix: 'post/',
+      cdnImageDomain: 'http://cdn.lnmpa.top/',
       // 分类  标签
       category_option: [],
       tag_option: []
@@ -161,8 +146,7 @@ export default {
         if (this.postForm.content) {
           this.postForm.content = response.data.data.content['html']
         }
-        const cdnImageDomain = 'http://cdn.lnmpa.top/'
-        this.postForm.thumbnail = cdnImageDomain + this.postForm.thumbnail
+        this.postForm.thumbnail = this.cdnImageDomain + this.postForm.thumbnail
 
         // Set tagsview title
         this.setTagsViewTitle()
@@ -181,7 +165,7 @@ export default {
           this.loading = true
           this.postForm.thumbnail = this.tempPictureUrl
           articleCreate(this.postForm).then(() => {
-            this.$message.success('添加成功')
+            this.$message.success('successful !')
             this.$router.push('/blog/article')
           })
           this.loading = false
@@ -197,7 +181,7 @@ export default {
           this.loading = true
           this.postForm.is_draft = 1
           articleCreate(this.postForm).then(() => {
-            this.$message.success('修改成功')
+            this.$message.success('已在草稿箱 !')
             this.$router.push('/blog/article')
           })
           this.loading = false
