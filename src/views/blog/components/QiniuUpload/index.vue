@@ -20,7 +20,7 @@ import { getToken } from '@/api/qiniu'
 // 七牛官方sdk https://developer.qiniu.com/sdk#official-sdk
 
 export default{
-  name: 'PictureUpload',
+  name: 'QiniuUpload',
   props: {
     propPictureUrl: {
       type: String,

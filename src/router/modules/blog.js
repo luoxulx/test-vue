@@ -44,7 +44,7 @@ const blogRouter = {
     },
     {
       path: 'qiniu',
-      component: () => import('@/views/blog/qiniu/index'),
+      component: () => import('@/views/blog/qiniu-file-list/index'),
       name: 'qiniu',
       meta: { title: 'qiniu图' }
     }

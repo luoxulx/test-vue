@@ -43,7 +43,9 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-form-item prop="created_at" label="缩略图"><qiniu-upload :prop-picture-url="postForm.thumbnail" :prop-prefix="path_prefix" v-model="postForm.thumbnail" /></el-form-item>
+              <el-form-item prop="created_at" label="缩略图">
+                <qiniu-upload :prop-picture-url="postForm.thumbnail" :prop-prefix="path_prefix" v-model="postForm.thumbnail" />
+              </el-form-item>
             </div>
           </el-col>
         </el-row>
@@ -57,13 +59,13 @@
 </template>
 
 <script>
-import Tinymce from '@/components/Tinymce'
+import Tinymce from '@/views/blog/components/Tinymce'
 import MDinput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { articleCreate, articleUpdate, articleDetail } from '@/api/article'
 import { tagList } from '@/api/tag'
 import { categoryList } from '@/api/category'
-import { QiniuUpload } from '@/views/blog/components/Qiniu'
+import { QiniuUpload } from '@/views/blog/components/QiniuUpload'
 
 const defaultForm = {
   is_draft: '0',
