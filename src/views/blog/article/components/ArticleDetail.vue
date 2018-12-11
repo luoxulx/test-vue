@@ -65,7 +65,7 @@ import Sticky from '@/components/Sticky' // 粘性header组件
 import { articleCreate, articleUpdate, articleDetail } from '@/api/article'
 import { tagList } from '@/api/tag'
 import { categoryList } from '@/api/category'
-import { QiniuUpload } from '@/views/blog/components/QiniuUpload'
+import { QiniuUpload } from '@/views/blog/components/QiniuUpload/index'
 
 const defaultForm = {
   is_draft: '0',
@@ -120,7 +120,10 @@ export default {
   },
   computed: {
     descriptionLength() {
-      return this.postForm.description.length
+      if (this.postForm.description) {
+        return this.postForm.description.length
+      }
+      return 0
     },
     lang() {
       return this.$store.getters.language
@@ -165,7 +168,8 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.postForm.thumbnail = this.tempPictureUrl
+          console.log(this.thumbnail)
+
           articleCreate(this.postForm).then(() => {
             this.$message.success('successful !')
             this.$router.push('/blog/article')

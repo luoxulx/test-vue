@@ -64,7 +64,8 @@ export default{
       })
     },
     handlePictureSuccess(res, file) {
-      this.tempPictureUrl = URL.createObjectURL(file.raw)
+      // this.tempPictureUrl = URL.createObjectURL(file.raw)
+      this.tempPictureUrl = 'http://cdn.lnmpa.top/' + res.key
       this.$message.success('successful to qiniu')
     },
     getFileExt(filename) {

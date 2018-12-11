@@ -1,21 +1,16 @@
 <template>
   <div :class="{fullscreen:fullscreen}" class="tinymce-container editor-container">
     <textarea :id="tinymceId" class="tinymce-textarea"/>
-    <div class="editor-custom-btn-container">
-      <editorImage color="#1890ff" class="editor-upload-btn" @successCBK="imageSuccessCBK"/>
-    </div>
   </div>
 </template>
 
 <script>
-import editorImage from './components/editorImage'
 import plugins from './plugins'
 import toolbar from './toolbar'
 import { QiniuUpload } from '@/api/qiniu'
 
 export default {
   name: 'Tinymce',
-  components: { editorImage },
   props: {
     id: {
       type: String,
@@ -141,9 +136,9 @@ export default {
         images_upload_handler(blobInfo, success, failure, progress) {
           progress(0)
           const formData = new FormData()
-          formData.append('image', blobInfo.blob())
+          formData.append('file', blobInfo.blob())
           QiniuUpload(formData).then((response) => {
-            success(response)
+            success(response.url)
             progress(100)
           }).catch(err => {
             failure('出现未知问题，刷新页面，或者联系程序员')
