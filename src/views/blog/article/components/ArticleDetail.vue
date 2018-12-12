@@ -3,16 +3,13 @@
     <el-form ref="postForm" :model="postForm" :rules="rules" class="form-container">
       <sticky :class-name="'sub-navbar '+postForm.status">
         <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="submitForm">发布</el-button>
-        <el-button v-loading="loading" type="warning" @click="draftForm">草稿</el-button>
+        <el-button v-loading="loading" type="warning" @click="submitDraft">草稿</el-button>
       </sticky>
       <div class="createPost-main-container">
         <el-row>
           <el-col :span="24">
             <el-form-item prop="title">
               <MDinput v-model="postForm.title" :maxlength="225" name="title" required>标题</MDinput>
-            </el-form-item>
-            <el-form-item prop="slug">
-              <MDinput v-model="postForm.slug" :maxlength="128" name="slug" prefix-icon="el-icon-share" clearable required>slug</MDinput>
             </el-form-item>
             <el-form-item prop="source">
               <MDinput v-model="postForm.source" :maxlength="225" type="url" name="source" prefix-icon="el-icon-share" clearable>来源链接</MDinput>
@@ -73,7 +70,6 @@ const defaultForm = {
   category_id: '',
   tags: [],
   title: '',
-  slug: '',
   source: '',
   description: '',
   thumbnail: '',
@@ -181,21 +177,9 @@ export default {
         }
       })
     },
-    draftForm() {
-      this.$refs.postForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.postForm.is_draft = 1
-          articleCreate(this.postForm).then(() => {
-            this.$message.success('已在草稿箱 !')
-            this.$router.push('/blog/article')
-          })
-          this.loading = false
-        } else {
-          this.$message.error(111)
-          return false
-        }
-      })
+    submitDraft() {
+      this.postForm.is_draft = 1
+      this.submitForm()
     },
     getTags() {
       tagList({ per_page: 0 }).then(response => {
