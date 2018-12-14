@@ -41,13 +41,19 @@
                 </el-col>
               </el-row>
               <el-form-item prop="created_at" label="缩略图">
-                <qiniu-upload :prop-picture-url="postForm.thumbnail" :prop-prefix="path_prefix" v-model="postForm.thumbnail" />
+                <template>
+                  <div class="components-container">
+                    <div class="editor-container">
+                      <dropzone id="myVueDropzone" :file-prefix="path_prefix" url="http://up.qiniup.com" @dropzone-removedFile="dropzoneRemove" @dropzone-success="dropzoneSuccess" />
+                    </div>
+                  </div>
+                </template>
               </el-form-item>
             </div>
           </el-col>
         </el-row>
         <div class="editor-container">
-          <Tinymce ref="editor" :height="400" v-model="postForm.content" />
+          <Tinymce ref="editor" :height="400" v-model="postForm.content" :file-prefix="path_prefix"/>
         </div>
       </div>
     </el-form>
@@ -59,10 +65,11 @@
 import Tinymce from '@/views/blog/components/Tinymce'
 import MDinput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
-import { articleCreate, articleUpdate, articleDetail } from '@/api/article'
 import { tagList } from '@/api/tag'
 import { categoryList } from '@/api/category'
-import { QiniuUpload } from '@/views/blog/components/QiniuUpload/index'
+import Dropzone from '@/views/blog/components/Dropzone'
+import { articleCreate, articleUpdate, articleDetail } from '@/api/article'
+import { deleteQiniuFile } from '@/api/qiniu'
 
 const defaultForm = {
   is_draft: '0',
@@ -80,7 +87,7 @@ const defaultForm = {
 
 export default {
   name: 'ArticleDetail',
-  components: { Tinymce, MDinput, Sticky, QiniuUpload },
+  components: { Tinymce, MDinput, Sticky, Dropzone },
   props: {
     isEdit: {
       type: Boolean,
@@ -109,6 +116,8 @@ export default {
       tempRoute: {},
       path_prefix: 'post/',
       cdnImageDomain: 'http://cdn.lnmpa.top/',
+      tempFileUrl: '',
+      tempFileObject: { token: '', key: '' },
       // 分类  标签
       category_option: [],
       tag_option: []
@@ -151,8 +160,6 @@ export default {
 
         // Set tagsview title
         this.setTagsViewTitle()
-      }).catch(err => {
-        console.error(err)
       })
     },
     setTagsViewTitle() {
@@ -164,10 +171,11 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           this.loading = true
-          console.log(this.thumbnail)
-
+          if (!this.postForm.thumbnail) {
+            this.$message.error('请上传缩略图 !')
+          }
           articleCreate(this.postForm).then(() => {
-            this.$message.success('successful !')
+            this.$message.success('添加成功 !')
             this.$router.push('/blog/article')
           })
           this.loading = false
@@ -197,6 +205,15 @@ export default {
           temp.push({ value: response.data.data[i].id, label: response.data.data[i].name })
         }
         this.category_option = temp
+      })
+    },
+    dropzoneSuccess(file) {
+      this.postForm.thumbnail = file.key
+      this.$message({ message: 'Upload success', type: 'success' })
+    },
+    dropzoneRemove(file) {
+      deleteQiniuFile({ filename: file.key }).then(response => {
+        this.$message({ message: '删除成功（七牛）！', type: 'success' })
       })
     },
     test() {

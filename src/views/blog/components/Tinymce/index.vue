@@ -12,6 +12,10 @@ import { QiniuUpload } from '@/api/qiniu'
 export default {
   name: 'Tinymce',
   props: {
+    filePrefix: {
+      type: String,
+      required: true
+    },
     id: {
       type: String,
       default: function() {
@@ -135,7 +139,10 @@ export default {
         },
         images_upload_handler(blobInfo, success, failure, progress) {
           progress(0)
+          const tempFilePrefix = this.filePrefix
           const formData = new FormData()
+          console.log(tempFilePrefix)
+          formData.append('path', tempFilePrefix)
           formData.append('file', blobInfo.blob())
           QiniuUpload(formData).then((response) => {
             success(response.url)

@@ -2,14 +2,14 @@ import request from '@/utils/request'
 
 export function getToken() {
   return request({
-    url: '/qiniu_file/token',
+    url: '/upload/qiniu_token',
     method: 'post'
   })
 }
 
 export function deleteQiniuFile(data) {
   return request({
-    url: '/qiniu_file/delete',
+    url: '/upload/qiniu_del',
     method: 'post',
     data
   })
@@ -17,7 +17,7 @@ export function deleteQiniuFile(data) {
 
 export function QiniuFiles(data) {
   return request({
-    url: '/qiniu_file/list',
+    url: '/upload/qiniu_list',
     method: 'post',
     data
   })
@@ -25,7 +25,7 @@ export function QiniuFiles(data) {
 
 export function QiniuUpload(data) {
   return request({
-    url: '/qiniu_file/upload',
+    url: '/upload/qiniu_upload',
     method: 'post',
     data
   })
