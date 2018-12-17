@@ -53,7 +53,7 @@
           </el-col>
         </el-row>
         <div class="editor-container">
-          <Tinymce ref="editor" :height="400" v-model="postForm.content" :file-prefix="path_prefix"/>
+          <Tinymce ref="editor" :height="300" :prefix="path_prefix" :value="postForm.content" v-model="postForm.content"/>
         </div>
       </div>
     </el-form>

@@ -12,7 +12,7 @@ import { QiniuUpload } from '@/api/qiniu'
 export default {
   name: 'Tinymce',
   props: {
-    filePrefix: {
+    prefix: {
       type: String,
       required: true
     },
@@ -106,6 +106,7 @@ export default {
         default_link_target: '_blank',
         link_title: false,
         nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
+        // imageupload_url: 'https://www.lnmpa.top/api/upload/local_upload',
         init_instance_callback: editor => {
           if (_this.value) {
             editor.setContent(_this.value)

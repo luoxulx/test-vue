@@ -13,6 +13,11 @@ Dropzone.autoDiscover = false
 
 export default {
   props: {
+    fileDisk: {
+      type: String,
+      // qiniu or local
+      default: 'qiniu'
+    },
     filePrefix: {
       type: String,
       required: true
@@ -131,18 +136,22 @@ export default {
         }
       },
       accept: (file, done) => {
-        /* 七牛*/
-        const image_ext = this.getFileExt(file.name)
-        if (!image_ext.trim()) {
-          vm.initOnce = false
-          return false
+        if (this.fileDisk === 'qiniu') {
+          /* 七牛*/
+          const image_ext = this.getFileExt(file.name)
+          if (!image_ext.trim()) {
+            vm.initOnce = false
+            return false
+          }
+          getToken().then(response => {
+            // console.log(response.data)
+            file.token = response.data.qiniu_token
+            file.key = this.filePrefix + response.data.qiniu_key + image_ext
+            done()
+          })
+        } else {
+          /* local */
         }
-        getToken().then(response => {
-          // console.log(response.data)
-          file.token = response.data.qiniu_token
-          file.key = this.filePrefix + response.data.qiniu_key + image_ext
-          done()
-        })
       },
       sending: (file, xhr, formData) => {
         formData.append('token', file.token)
