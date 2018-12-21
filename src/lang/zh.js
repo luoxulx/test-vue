@@ -1,7 +1,7 @@
 export default {
   route: {
     dashboard: '首页',
-    blog: '博客',
+    blog: 'dsad',
     article: '文章',
     category: '分类',
     tag: '标签',

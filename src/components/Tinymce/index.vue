@@ -11,7 +11,7 @@
 import editorImage from './components/editorImage'
 import plugins from './plugins'
 import toolbar from './toolbar'
-import { QiniuUpload } from '@/api/qiniu'
+import { fileUpload } from '@/api'
 
 export default {
   name: 'Tinymce',
@@ -142,7 +142,7 @@ export default {
           progress(0)
           const formData = new FormData()
           formData.append('image', blobInfo.blob())
-          QiniuUpload(formData).then((response) => {
+          fileUpload(formData).then((response) => {
             success(response)
             progress(100)
           }).catch(err => {

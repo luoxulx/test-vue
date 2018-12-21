@@ -7,7 +7,7 @@
 <script>
 import plugins from './plugins'
 import toolbar from './toolbar'
-import { QiniuUpload } from '@/api/qiniu'
+import { fileUpload } from '@/api'
 
 export default {
   name: 'Tinymce',
@@ -50,7 +50,7 @@ export default {
       tinymceId: this.id,
       fullscreen: false,
       languageTypeList: {
-        'en': 'en',
+        'en': 'en_GB',
         'zh': 'zh_CN'
       }
     }
@@ -122,51 +122,18 @@ export default {
             _this.fullscreen = e.state
           })
         },
-        // 整合七牛上传
-        images_dataimg_filter(img) {
-          setTimeout(() => {
-            const $ = this
-            const $image = $(img)
-            $image.removeAttr('width')
-            $image.removeAttr('height')
-            if ($image[0].height && $image[0].width) {
-              $image.attr('data-wscntype', 'image')
-              $image.attr('data-wscnh', $image[0].height)
-              $image.attr('data-wscnw', $image[0].width)
-              $image.addClass('wscnph')
-            }
-          }, 0)
-          return img
-        },
         images_upload_handler(blobInfo, success, failure, progress) {
           progress(0)
-          const tempFilePrefix = this.filePrefix
           const formData = new FormData()
-          console.log(tempFilePrefix)
-          formData.append('path', tempFilePrefix)
           formData.append('file', blobInfo.blob())
-          QiniuUpload(formData).then((response) => {
-            success(response.url)
+          formData.append('path', 'post')
+          fileUpload(formData).then((response) => {
+            success(response.data.url)
             progress(100)
           }).catch(err => {
-            failure('出现未知问题，刷新页面，或者联系程序员')
+            failure('If an unknown problem arises, refresh the page, or contact the programmer!')
             console.log(err)
           })
-          // const token = _this.$store.getters.token
-          // getToken(token).then(response => {
-          //   const url = response.data.qiniu_url
-          //   const formData = new FormData()
-          //   formData.append('token', response.data.qiniu_token)
-          //   formData.append('key', response.data.qiniu_key)
-          //   formData.append('file', blobInfo.blob(), url)
-          //   upload(formData).then(() => {
-          //     success(url)
-          //     progress(100)
-          //   })
-          // }).catch(err => {
-          //   failure('出现未知问题，刷新页面，或者联系程序员')
-          //   console.log(err)
-          // })
         }
       })
     },
@@ -186,6 +153,9 @@ export default {
       arr.forEach(v => {
         window.tinymce.get(_this.tinymceId).insertContent(`<img class="wscnph" src="${v.url}" >`)
       })
+    },
+    test() {
+      fileUpload(1)
     }
   }
 }

@@ -1,5 +1,5 @@
-import { loginByEmail, logout, getUserInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { loginByEmail, logout, getUserInfo } from '@/api'
+import { getJWTToken, setJWTToken, removeJWTToken } from '@/utils/auth'
 
 const user = {
   state: {
@@ -7,7 +7,7 @@ const user = {
     user_id: '',
     status: '',
     code: '',
-    token: getToken(),
+    token: getJWTToken(),
     name: '',
     avatar: '',
     introduction: '',
@@ -52,7 +52,7 @@ const user = {
         loginByEmail(email, userInfo.password).then(response => {
           const data = response.data
           commit('SET_TOKEN', data.token)
-          setToken(response.data.token)
+          setJWTToken(response.data.token)
           resolve()
         }).catch(error => {
           reject(error)
@@ -105,7 +105,7 @@ const user = {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
-          removeToken()
+          removeJWTToken()
           resolve()
         }).catch(error => {
           reject(error)
@@ -117,7 +117,7 @@ const user = {
     FedLogOut({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
-        removeToken()
+        removeJWTToken()
         resolve()
       })
     },
@@ -126,7 +126,7 @@ const user = {
     ChangeRoles({ commit, dispatch }, role) {
       return new Promise(resolve => {
         commit('SET_TOKEN', role)
-        setToken(role)
+        setJWTToken(role)
         getUserInfo(role).then(response => {
           const data = response.data
           commit('SET_ROLES', data.roles)

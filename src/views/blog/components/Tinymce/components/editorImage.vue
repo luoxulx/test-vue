@@ -22,7 +22,7 @@
 </template>
 
 <script>
-// import { getToken } from 'api/qiniu'
+// import { getUploadToken } from 'api'
 
 export default {
   name: 'EditorSlideUpload',

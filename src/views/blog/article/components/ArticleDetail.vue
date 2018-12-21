@@ -41,13 +41,7 @@
                 </el-col>
               </el-row>
               <el-form-item prop="created_at" label="缩略图">
-                <template>
-                  <div class="components-container">
-                    <div class="editor-container">
-                      <dropzone id="myVueDropzone" :file-prefix="path_prefix" url="http://up.qiniup.com" @dropzone-removedFile="dropzoneRemove" @dropzone-success="dropzoneSuccess" />
-                    </div>
-                  </div>
-                </template>
+                <span>d</span>
               </el-form-item>
             </div>
           </el-col>
@@ -65,11 +59,7 @@
 import Tinymce from '@/views/blog/components/Tinymce'
 import MDinput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
-import { tagList } from '@/api/tag'
-import { categoryList } from '@/api/category'
-import Dropzone from '@/views/blog/components/Dropzone'
-import { articleCreate, articleUpdate, articleDetail } from '@/api/article'
-import { deleteQiniuFile } from '@/api/qiniu'
+import { tagIndex, categoryIndex, articleCreate, articleUpdate, articleDetail } from '@/api'
 
 const defaultForm = {
   is_draft: '0',
@@ -87,7 +77,7 @@ const defaultForm = {
 
 export default {
   name: 'ArticleDetail',
-  components: { Tinymce, MDinput, Sticky, Dropzone },
+  components: { Tinymce, MDinput, Sticky },
   props: {
     isEdit: {
       type: Boolean,
@@ -156,8 +146,6 @@ export default {
         if (this.postForm.content) {
           this.postForm.content = response.data.data.content['html']
         }
-        this.postForm.thumbnail = this.cdnImageDomain + this.postForm.thumbnail
-
         // Set tagsview title
         this.setTagsViewTitle()
       })
@@ -171,11 +159,9 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           this.loading = true
-          if (!this.postForm.thumbnail) {
-            this.$message.error('请上传缩略图 !')
-          }
+          const tempMessage = this.postForm.is_draft ? 'saved draft !' : 'created successful !'
           articleCreate(this.postForm).then(() => {
-            this.$message.success('添加成功 !')
+            this.$message.success(tempMessage)
             this.$router.push('/blog/article')
           })
           this.loading = false
@@ -190,7 +176,7 @@ export default {
       this.submitForm()
     },
     getTags() {
-      tagList({ per_page: 0 }).then(response => {
+      tagIndex({ per_page: 0 }).then(response => {
         const temp = []
         for (var i = 0; i < response.data.data.length; i++) {
           temp.push({ value: response.data.data[i].id, label: response.data.data[i].name })
@@ -199,7 +185,7 @@ export default {
       })
     },
     getCategories() {
-      categoryList({ per_page: 0 }).then(response => {
+      categoryIndex({ per_page: 0 }).then(response => {
         const temp = []
         for (var i = 0; i < response.data.data.length; i++) {
           temp.push({ value: response.data.data[i].id, label: response.data.data[i].name })
@@ -208,13 +194,11 @@ export default {
       })
     },
     dropzoneSuccess(file) {
-      this.postForm.thumbnail = file.key
+      this.postForm.thumbnail = file.real_path
       this.$message({ message: 'Upload success', type: 'success' })
     },
     dropzoneRemove(file) {
-      deleteQiniuFile({ filename: file.key }).then(response => {
-        this.$message({ message: '删除成功（七牛）！', type: 'success' })
-      })
+      this.$message({ message: 'local file delete successful！', type: 'success' })
     },
     test() {
       articleUpdate()

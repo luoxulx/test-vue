@@ -50,7 +50,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { logout } from '@/api/login'
+import { logout } from '@/api'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'

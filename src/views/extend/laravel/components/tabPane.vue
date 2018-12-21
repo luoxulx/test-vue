@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { fetchLaravelLog } from '@/api/extend'
+import { fetchLaravelLog } from '@/api'
 
 export default {
   props: {

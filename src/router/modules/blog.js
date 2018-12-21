@@ -41,12 +41,6 @@ const blogRouter = {
       component: () => import('@/views/blog/article/edit'),
       name: 'EditArticle',
       meta: { title: 'editArticle', noCache: true, icon: 'edit' }
-    },
-    {
-      path: 'qiniu',
-      component: () => import('@/views/blog/qiniu-file-list/index'),
-      name: 'qiniu',
-      meta: { title: 'qiniu图' }
     }
   ]
 }

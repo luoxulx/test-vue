@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { articleList } from '@/api/article'
+import { articleIndex } from '@/api'
 
 export default {
   name: 'ExportZip',
@@ -53,7 +53,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      articleList().then(response => {
+      articleIndex().then(response => {
         this.list = response.data.items
         this.listLoading = false
       })

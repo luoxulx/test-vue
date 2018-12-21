@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { tagList, tagCreate, tagUpdate, TagDelete } from '@/api/tag'
+import { tagIndex, tagCreate, tagUpdate, TagDelete } from '@/api'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -112,7 +112,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      tagList(this.listQuery).then(response => {
+      tagIndex(this.listQuery).then(response => {
         this.listLoading = false
         this.list = response.data.data
         this.total = response.data.meta.pagination.total

@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { articleList } from '@/api/article'
+import { articleIndex } from '@/api'
 import { parseTime } from '@/utils'
 
 // options components
@@ -71,7 +71,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      articleList().then(response => {
+      articleIndex().then(response => {
         this.list = response.data.items
         this.listLoading = false
       })

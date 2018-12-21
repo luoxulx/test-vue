@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { articleList } from '@/api/article'
+import { articleIndex } from '@/api'
 
 export default {
   name: 'SelectExcel',
@@ -66,7 +66,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      articleList(this.listQuery).then(response => {
+      articleIndex(this.listQuery).then(response => {
         this.list = response.data.items
         this.listLoading = false
       })
