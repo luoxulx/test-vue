@@ -128,11 +128,11 @@ export default {
           formData.append('file', blobInfo.blob())
           formData.append('path', 'post')
           fileUpload(formData).then((response) => {
-            success(response.data.url)
+            success('blob:' + response.data.data.url)
             progress(100)
           }).catch(err => {
             failure('If an unknown problem arises, refresh the page, or contact the programmer!')
-            console.log(err)
+            console.error(err)
           })
         }
       })
