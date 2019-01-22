@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { categoryIndex, categoryCreate, categoryUpdate, categoryDelete } from '@/api'
+import { categoryList, categoryCreate, categoryUpdate, categoryDelete } from '@/api'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -118,7 +118,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      categoryIndex(this.listQuery).then(response => {
+      categoryList(this.listQuery).then(response => {
         this.list = response.data.data
         this.total = response.data.meta.pagination.total
         this.listLoading = false

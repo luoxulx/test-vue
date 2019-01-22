@@ -1,13 +1,11 @@
 <template>
-  <article-detail :is-edit="false"/>
+  <simple-upload simple-value="https://file.tapd.cn/compress/compress_img/700?src=https://file.tapd.cn//tfl/pictures/201901/tapd_22218101_1547774819_44.png"/>
 </template>
 
 <script>
-import ArticleDetail from './components/ArticleDetail'
-
+import SimpleUpload from '../components/SimpleUpload'
 export default {
-  name: 'CreateArticle',
-  components: { ArticleDetail }
+  name: 'Create',
+  components: { SimpleUpload }
 }
 </script>
-

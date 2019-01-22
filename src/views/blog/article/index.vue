@@ -12,44 +12,38 @@
       </router-link>
     </div>
 
-    <el-table
-      v-loading="listLoading"
-      :key="tableKey"
-      :data="list"
-      border
-      highlight-current-row
-      style="width: 100%;">
+    <el-table v-loading="listLoading" :key="tableKey" :data="list" border highlight-current-row style="width: 100%;">
       <el-table-column label="ID" prop="id" sortable="custom" align="center" width="65">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
+
       <el-table-column label="分类ID" prop="id" sortable="custom" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.category_id }}</span>
         </template>
       </el-table-column>
+
       <el-table-column label="UserID" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.user_id }}</span>
         </template>
       </el-table-column>
+
       <el-table-column :label="$t('table.title')" :show-overflow-tooltip="true" min-width="150px">
         <template slot-scope="scope">
-          <span class="link-type" @click="alert(1)">{{ scope.row.title }}</span>
+          <span class="link-type" title="点击预览" @click="previewArticle(scope.row)">{{ scope.row.title }}</span>
         </template>
       </el-table-column>
+
       <el-table-column :label="$t('table.readings')" align="center" width="65">
         <template slot-scope="scope">
           <span>{{ scope.row.view_count }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="picture"
-        header-align="center"
-        align="center"
-        width="150px"
-        label="缩略图">
+
+      <el-table-column prop="picture" header-align="center" align="center" width="150px" label="缩略图">
         <template slot-scope="scope">
           <el-popover placement="right" title="完整图预览" trigger="click">
             <img :src="scope.row.img_url" alt="xx">
@@ -57,32 +51,31 @@
           </el-popover>
         </template>
       </el-table-column>
+
       <el-table-column label="草稿" class-name="status-col">
         <template slot-scope="scope">
           <el-tag :type="scope.row.is_draft | statusFilter" @click="handleModifyStatus(scope.row,'0')">{{ scope.row.is_draft }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间">
+
+      <el-table-column :label="$t('table.createdAt')" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.created_at }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="225" class-name="small-padding fixed-width">
+
+      <el-table-column :label="$t('table.actions')" align="center" width="155" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <!--<el-button v-if="scope.row.status!='0'" size="mini" type="warning" @click="handleModifyStatus(scope.row,'0')">{{ $t('table.draft') }}-->
-          <!--</el-button>-->
-          <!--<el-button v-if="scope.row.status!='1'" size="mini" type="success" @click="handleModifyStatus(scope.row,'1')">{{ $t('table.publish') }}-->
-          <!--</el-button>-->
-          <el-button type="info" size="mini" @click="previewArticle(scope.row)">预览</el-button>
           <router-link :to="'/blog/article/edit/'+scope.row.id">
-            <el-button type="warning" size="mini" icon="el-icon-edit">编辑</el-button>
+            <el-button type="warning" size="mini" icon="el-icon-edit">{{ $t('table.edit') }}</el-button>
           </router-link>
-          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">{{ $t('table.delete') }}</el-button>
+          <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">{{ $t('table.delete') }}</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.per_page" @pagination="getList" />
+
     <el-dialog :visible.sync="previewDialog" title="Reading previewContent">
       <el-container>
         <el-main>
@@ -93,11 +86,12 @@
         </span>
       </el-container>
     </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { articleIndex, articleDelete } from '@/api'
+import { articleList, articleDelete } from '@/api'
 import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -141,7 +135,7 @@ export default {
   },
   methods: {
     getList() {
-      articleIndex(this.listQuery).then(response => {
+      articleList(this.listQuery).then(response => {
         const cdnImageDomain = 'http://cdn.lnmpa.top/'
         const tempList = response.data.data
         this.total = response.data.meta.pagination.total

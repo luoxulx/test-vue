@@ -25,12 +25,12 @@ export function loginByEmail(email, password) {
   })
 }
 
-/* -----------------------------open api end------------------------------- */
+/* ----------------------------- open api end ------------------------------- */
 
-/* -------------------------------JWT auth:api operation -start------------------------------- */
+/* ------------------------------- JWT auth:api operation-start ------------------------------- */
 export function logout() {
   return request({
-    url: '/login/logout',
+    url: '/auth/logout',
     method: 'post'
   })
 }
@@ -57,8 +57,8 @@ export function fileUpload(data) {
   })
 }
 
-// post--start
-export function articleIndex(query) {
+/* article-start */
+export function articleList(query) {
   return request({
     url: '/article',
     method: 'get',
@@ -95,10 +95,10 @@ export function articleDelete(id) {
     method: 'delete'
   })
 }
-// post--end
+/* article-start */
 
 // category--start
-export function categoryIndex(query) {
+export function categoryList(query) {
   return request({
     url: '/category',
     method: 'get',

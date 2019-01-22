@@ -11,26 +11,14 @@
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input
-          v-model="loginForm.email"
-          :placeholder="$t('login.email')"
-          name="email"
-          type="text"
-          auto-complete="on"
-        />
+        <el-input v-model="loginForm.email" :placeholder="$t('login.email')" name="email" type="text" auto-complete="on" />
       </el-form-item>
 
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input
-          :type="passwordType"
-          v-model="loginForm.password"
-          :placeholder="$t('login.password')"
-          name="password"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin" />
+        <el-input :type="passwordType" v-model="loginForm.password" :placeholder="$t('login.password')" name="password" auto-complete="on" @keyup.enter.native="handleLogin" />
         <span class="show-pwd" @click="showPwd">
           <svg-icon icon-class="eye" />
         </span>
@@ -40,7 +28,6 @@
 
       <div class="tips">
         <span>{{ $t('login.email') }} : sb@sb.sb</span>
-        <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
       </div>
       <br>
     </el-form>
@@ -49,7 +36,6 @@
 </template>
 
 <script>
-import { validateEmail } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './socialsignin'
 
@@ -57,28 +43,14 @@ export default {
   name: 'Login',
   components: { LangSelect, SocialSign },
   data() {
-    const validateByEmail = (rule, value, callback) => {
-      if (!validateEmail) {
-        callback(new Error('The Email is NOT validate!'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
-    }
     return {
       loginForm: {
         email: 'lx@lx.com',
         password: 'aaaaa'
       },
       loginRules: {
-        email: [{ required: true, trigger: 'blur', validator: validateByEmail }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        email: [{ required: true, type: 'email', message: 'The Email is NOT validate!', trigger: ['blur', 'change'] }],
+        password: [{ required: true, len: 6, message: 'The password can not be less than 6 digits!', trigger: ['blur', 'change'] }]
       },
       passwordType: 'password',
       loading: false,
@@ -150,7 +122,7 @@ export default {
   /* 修复input 背景不协调 和光标变色 */
   /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-  $bg:#283443;
+  $bg: #6450bd;
   $light_gray:#eee;
   $cursor: #fff;
 
@@ -194,9 +166,9 @@ export default {
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-$bg:#2d3a4b;
+$bg:#000236;
 $dark_gray:#889aa4;
-$light_gray:#eee;
+$light_gray:#fff;
 
 .login-container {
   position: fixed;

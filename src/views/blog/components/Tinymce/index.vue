@@ -106,7 +106,26 @@ export default {
         default_link_target: '_blank',
         link_title: false,
         nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
-        // imageupload_url: 'https://www.lnmpa.top/api/upload/local_upload',
+        // lx-new
+        upload_image_url: 'https://www.lnmpa.top/api/file/upload',
+        content_style: `*                         { padding:5; margin:5; }
+                        html, body                { height:100%; }
+                        img                       { max-width:100%; display:block;height:auto; }
+                        a                         { text-decoration: none; }
+                        iframe                    { width: 100%; }
+                        p                         { line-height:1.6; margin: 0px; }
+                        table                     { word-wrap:break-word; word-break:break-all; max-width:100%; border:none; border-color:#999; }
+                        .mce-object-iframe        { width:100%; box-sizing:border-box; margin:0; padding:0; }
+                        ul,ol                     { list-style-position:inside; }`,
+        insert_button_items: 'image link | inserttable',
+        paste_retain_style_properties: 'all',
+        paste_word_valid_elements: '*[*]', // word需要它
+        paste_data_images: true, // 粘贴的同时能把内容里的图片自动上传，非常强力的功能
+        paste_convert_word_fake_lists: false, // 插入word文档需要该属性
+        paste_webkit_styles: 'all',
+        paste_merge_formats: true,
+        paste_auto_cleanup_on_paste: false,
+        toolbar_items_size: 'mini',
         init_instance_callback: editor => {
           if (_this.value) {
             editor.setContent(_this.value)
@@ -122,13 +141,16 @@ export default {
             _this.fullscreen = e.state
           })
         },
+        images_dataimg_filter(img) {
+          return img.hasAttribute('internal-blob')
+        },
         images_upload_handler(blobInfo, success, failure, progress) {
           progress(0)
           const formData = new FormData()
           formData.append('file', blobInfo.blob())
           formData.append('path', 'post')
           fileUpload(formData).then((response) => {
-            success('blob:' + response.data.data.url)
+            success(response.data.data.url)
             progress(100)
           }).catch(err => {
             failure('If an unknown problem arises, refresh the page, or contact the programmer!')
@@ -153,9 +175,6 @@ export default {
       arr.forEach(v => {
         window.tinymce.get(_this.tinymceId).insertContent(`<img class="wscnph" src="${v.url}" >`)
       })
-    },
-    test() {
-      fileUpload(1)
     }
   }
 }
